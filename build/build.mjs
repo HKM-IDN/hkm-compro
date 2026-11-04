@@ -35,6 +35,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..'); // akar project hkm-compro-vanila
 // DIST_DIR=dist-xxx → build ke folder lain (berguna kalau beberapa build jalan bersamaan)
 const DIST = path.resolve(ROOT, process.env.DIST_DIR || 'dist');
+// BASE_PATH=/hkm-compro → situs disajikan dari subfolder (mis. GitHub Pages
+// tanpa custom domain). Kosong = situs di root domain, seperti biasa.
+const BASE_PATH = (process.env.BASE_PATH || '').replace(/\/+$/, '').replace(/^(?=[^/])/, '/');
 
 // Waktu build dihitung SEKALI di sini lalu dialirkan ke semua template.
 // Aturan CLAUDE.md: jangan panggil Date.now() di dalam render.
@@ -260,6 +263,31 @@ async function buildSitemap(writtenPaths) {
   log(`sitemap: ${unique.length} URL`);
 }
 
+// ── 7. Base path ────────────────────────────────────────────────────────────
+
+/**
+ * Template menulis link root-relative (href="/products"). Kalau situs
+ * disajikan dari subfolder, awali semua link itu dengan BASE_PATH.
+ * Dikerjakan di sini, sekali di akhir, supaya template tidak perlu tahu.
+ * URL absolut (https://…) dan protocol-relative (//…) tidak disentuh.
+ */
+async function applyBasePath() {
+  if (!BASE_PATH) return;
+  log(`Terapkan base path ${BASE_PATH}…`);
+
+  const ATTR_RE = /(\s(?:href|src|action|poster|data-[\w-]+)=["'])\/(?!\/)/g;
+  const files = (await fs.readdir(DIST, { recursive: true })).filter((f) => f.endsWith('.html'));
+
+  for (const rel of files) {
+    const full = path.join(DIST, rel);
+    const before = await fs.readFile(full, 'utf8');
+    const after = before.replace(ATTR_RE, `$1${BASE_PATH}/`);
+    if (after !== before) await fs.writeFile(full, after, 'utf8');
+  }
+
+  log(`Base path diterapkan ke ${files.length} file HTML`);
+}
+
 // ── Main ────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -278,6 +306,7 @@ async function main() {
   await copyAssets();
   await buildCss(); // setelah HTML ada, supaya Tailwind lihat class yang dipakai
   await buildSitemap(written);
+  await applyBasePath();
 
   console.log(`\n─── Selesai: ${written.length} halaman → ${path.relative(ROOT, DIST)} ───`);
 
