@@ -27,6 +27,7 @@ import { LANGS, outputPath } from './routes.mjs';
 import { SITE_URL } from './lib/seo.mjs';
 import * as queries from './lib/queries.mjs';
 import { ROUTES } from './pages/index.mjs';
+import * as notFound from './pages/not-found.mjs';
 
 const execFileAsync = promisify(execFile);
 
@@ -148,6 +149,20 @@ async function buildPages(data) {
           });
         }
       }
+    }
+  }
+
+  // Halaman 404 — bukan route biasa, ditulis ke 404.html (EN) + id/404.html (ID).
+  // Nginx / scripts/serve.mjs menyajikannya untuk URL yang tidak ada.
+  for (const lang of LANGS) {
+    try {
+      const htmlOut = await notFound.render({ ...ctx, lang });
+      if (!htmlOut) continue;
+      const out = notFound.OUTPUT[lang];
+      await writeFile(out, htmlOut);
+      written.push(out);
+    } catch (err) {
+      errors.push({ route: 'not-found', stage: 'render', path: `[${lang}]`, message: err.message });
     }
   }
 

@@ -1,0 +1,39 @@
+/* ─────────────────────────────────────────────
+   Halaman berita — /news dan /news/[slug]
+   Dipindah dari blok <style> di dalam komponen React
+   (NewsContent.js + ArticleContent.js). Isi sama persis.
+──────────────────────────────────────────────── */
+
+.featured-card-link:hover {
+  border-color: #0066ff !important;
+  box-shadow: 0 20px 50px rgba(0, 102, 255, 0.18);
+}
+
+.news-card-link:hover,
+.related-card-link:hover {
+  transform: translateY(-4px);
+  border-color: #0066ff !important;
+  box-shadow: 0 12px 30px rgba(0, 102, 255, 0.15);
+}
+
+@media (max-width: 979px) {
+  .news-grid-responsive,
+  .related-grid-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .meta-divider-line {
+    display: none !important;
+  }
+  .article-share-btns {
+    margin-left: 0 !important;
+    width: 100%;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  /* Tambahan (tidak ada di React): kartu featured ditumpuk di mobile —
+     versi React tetap 2 kolom 1.3fr/1fr sehingga teks terjepit. */
+  .featured-card-link {
+    grid-template-columns: 1fr !important;
+  }
+}

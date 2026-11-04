@@ -7,6 +7,7 @@
  */
 import { html, raw, attrs } from './html.mjs';
 import { SITE_NAME, SITE_URL, OG_DEFAULT } from './lib/seo.mjs';
+import { langPath } from './routes.mjs';
 
 const TITLE_TEMPLATE = (t) => `${t} | HKM Indonesia`;
 const DEFAULT_TITLE = `${SITE_NAME} — HKM`;
@@ -75,7 +76,10 @@ export function head({ meta = null, lang = 'en', path = '/', schemas = [] } = {}
   const og = meta?.openGraph || {};
   const tw = meta?.twitter || {};
   const ogImage = og.images?.[0]?.url || OG_DEFAULT;
-  const canonical = meta?.alternates?.canonical || `${SITE_URL}${path}`;
+  // Canonical harus menunjuk ke URL bahasa halaman ini sendiri. Kalau halaman
+  // /id/ ber-canonical ke versi EN, Google menganggapnya duplikat dan tidak
+  // meng-index versi Indonesia. buildMeta() hanya tahu path EN, jadi dihitung di sini.
+  const canonical = `${SITE_URL}${langPath(path, lang)}`;
 
   // Alternate hreflang — versi vanilla punya URL terpisah per bahasa,
   // jadi hreflang-nya benar-benar menunjuk ke halaman yang berbeda.
@@ -100,7 +104,7 @@ export function head({ meta = null, lang = 'en', path = '/', schemas = [] } = {}
     <meta property="og:locale" content="${lang === 'id' ? 'id_ID' : 'en_US'}" />
     <meta property="og:title" content="${og.title || title}" />
     <meta property="og:description" content="${og.description || description}" />
-    <meta property="og:url" content="${og.url || canonical}" />
+    <meta property="og:url" content="${canonical}" />
     <meta property="og:image" content="${ogImage}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />

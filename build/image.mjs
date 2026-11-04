@@ -77,19 +77,7 @@ export function image({
     loading: priority ? 'eager' : 'lazy',
     decoding: priority ? 'sync' : 'async',
     fetchpriority: priority ? 'high' : null,
-  })}></img${attrs({
-    src: fallback,
-    srcset: set,
-    sizes,
-    alt: alt || '',
-    class: className || null,
-    style: style || null,
-    width: width || null,
-    height: height || null,
-    loading: priority ? 'eager' : 'lazy',
-    decoding: priority ? 'sync' : 'async',
-    fetchpriority: priority ? 'high' : null,
-  })}>`;
+  })} />`;
 }
 
 /** Ambil dimensi asli dari _ref Sanity (format: image-<hash>-<w>x<h>-<ext>). */

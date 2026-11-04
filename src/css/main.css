@@ -7,6 +7,9 @@
 
 @import 'tailwindcss';
 
+/* Style per halaman — dulunya blok <style> di dalam komponen React */
+@import './pages/news.css';
+
 /* ─────────────────────────────────────────────
    HKM Design System — Color Tokens
    Otomatis jadi Tailwind utilities:

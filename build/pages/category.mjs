@@ -17,7 +17,7 @@
  */
 import { page } from '../layout.mjs';
 import { html, raw } from '../html.mjs';
-import { buildMeta, jsonLd, schemaBreadcrumb, SITE_URL } from '../lib/seo.mjs';
+import { buildMeta, jsonLd, schemaBreadcrumb } from '../lib/seo.mjs';
 import { loc } from '../lib/i18n.mjs';
 import { langPath, slugOf } from '../routes.mjs';
 import { productCard } from '../partials/product-card.mjs';
@@ -290,12 +290,12 @@ export const route = {
       schemas: [
         jsonLd(
           schemaBreadcrumb([
-            { name: lang === 'id' ? 'Beranda' : 'Home', url: SITE_URL + langPath('/', lang) },
+            { name: lang === 'id' ? 'Beranda' : 'Home', url: langPath('/', lang) },
             {
               name: lang === 'id' ? 'Produk' : 'Products',
-              url: SITE_URL + langPath('/products', lang),
+              url: langPath('/products', lang),
             },
-            { name, url: SITE_URL + langPath(`/products/${categorySlug}`, lang) },
+            { name, url: langPath(`/products/${categorySlug}`, lang) },
           ])
         ),
       ],

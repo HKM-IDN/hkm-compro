@@ -24,7 +24,6 @@ import {
   schemaProduct,
   schemaFaqPage,
   schemaBreadcrumb,
-  SITE_URL,
 } from '../lib/seo.mjs';
 import { loc } from '../lib/i18n.mjs';
 import { getT } from '../lib/translations.mjs';
@@ -137,13 +136,13 @@ export const route = {
       jsonLd(schemaProduct({ product, categorySlug: catSlug, slug: productSlug })),
       jsonLd(
         schemaBreadcrumb([
-          { name: lang === 'id' ? 'Beranda' : 'Home', url: SITE_URL + langPath('/', lang) },
+          { name: lang === 'id' ? 'Beranda' : 'Home', url: langPath('/', lang) },
           {
             name: lang === 'id' ? 'Produk' : 'Products',
-            url: SITE_URL + langPath('/products', lang),
+            url: langPath('/products', lang),
           },
-          { name: categoryName, url: SITE_URL + langPath(`/products/${catSlug}`, lang) },
-          { name, url: SITE_URL + langPath(path, lang) },
+          { name: categoryName, url: langPath(`/products/${catSlug}`, lang) },
+          { name, url: langPath(path, lang) },
         ])
       ),
     ];

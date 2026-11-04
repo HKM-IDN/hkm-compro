@@ -9,7 +9,7 @@
  */
 import { page } from '../layout.mjs';
 import { html, raw } from '../html.mjs';
-import { buildMeta, jsonLd, schemaBreadcrumb, SITE_URL } from '../lib/seo.mjs';
+import { buildMeta, jsonLd, schemaBreadcrumb } from '../lib/seo.mjs';
 import { loc } from '../lib/i18n.mjs';
 import { sanitizeHtml } from '../lib/sanitize.mjs';
 import { t as tKey } from '../lib/translations.mjs';
@@ -364,10 +364,10 @@ export const route = {
       schemas: [
         jsonLd(
           schemaBreadcrumb([
-            { name: lang === 'id' ? 'Beranda' : 'Home', url: SITE_URL + langPath('/', lang) },
+            { name: lang === 'id' ? 'Beranda' : 'Home', url: langPath('/', lang) },
             {
               name: lang === 'id' ? 'Tentang' : 'About',
-              url: SITE_URL + langPath('/about', lang),
+              url: langPath('/about', lang),
             },
           ])
         ),
