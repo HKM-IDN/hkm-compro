@@ -32,7 +32,8 @@ const execFileAsync = promisify(execFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..'); // akar project hkm-compro-vanila
-const DIST = path.join(ROOT, 'dist');
+// DIST_DIR=dist-xxx → build ke folder lain (berguna kalau beberapa build jalan bersamaan)
+const DIST = path.resolve(ROOT, process.env.DIST_DIR || 'dist');
 
 // Waktu build dihitung SEKALI di sini lalu dialirkan ke semua template.
 // Aturan CLAUDE.md: jangan panggil Date.now() di dalam render.
@@ -263,7 +264,7 @@ async function main() {
   await buildCss(); // setelah HTML ada, supaya Tailwind lihat class yang dipakai
   await buildSitemap(written);
 
-  console.log(`\n─── Selesai: ${written.length} halaman → vanilla/dist ───`);
+  console.log(`\n─── Selesai: ${written.length} halaman → ${path.relative(ROOT, DIST)} ───`);
 
   if (errors.length) {
     console.error(`\n✖ Build selesai dengan ${errors.length} error.\n`);

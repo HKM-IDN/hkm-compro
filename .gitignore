@@ -3,6 +3,7 @@
 
 # hasil build — digenerate, jangan di-commit
 /dist
+/dist-*
 /screenshots
 
 # environment — berisi kredensial

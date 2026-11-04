@@ -16,7 +16,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DIST = path.join(__dirname, '..', 'dist');
+const DIST = path.resolve(__dirname, '..', process.env.DIST_DIR || 'dist');
 
 const args = process.argv.slice(2);
 const BASE = (() => {
