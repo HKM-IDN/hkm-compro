@@ -23,7 +23,7 @@
  */
 import { page } from '../layout.mjs';
 import { html, raw, attrs, jsonScript } from '../html.mjs';
-import { buildMeta, jsonLd, schemaBreadcrumb, SITE_URL } from '../lib/seo.mjs';
+import { buildMeta, jsonLd, schemaBreadcrumb } from '../lib/seo.mjs';
 import { loc } from '../lib/i18n.mjs';
 import { getT } from '../lib/translations.mjs';
 import { PRODUCTS_FOR_CONTACT_QUERY } from '../lib/queries.mjs';
@@ -576,15 +576,21 @@ export const route = {
       schemas: [
         jsonLd(
           schemaBreadcrumb([
-            { name: lang === 'id' ? 'Beranda' : 'Home', url: SITE_URL + langPath('/', lang) },
+            { name: lang === 'id' ? 'Beranda' : 'Home', url: langPath('/', lang) },
             {
               name: lang === 'id' ? 'Hubungi Kami' : 'Contact',
-              url: SITE_URL + langPath('/contact', lang),
+              url: langPath('/contact', lang),
             },
           ])
         ),
       ],
-      body: contactBody({ settings, products: products || [], lang, formspreeUrl }),
+      body: contactBody({
+        settings,
+        products: products || [],
+        lang,
+        // URL contoh dari .env.example ("your_form_id") dianggap belum di-set
+        formspreeUrl: formspreeUrl && !/your_form_id/i.test(formspreeUrl) ? formspreeUrl : null,
+      }),
     });
   },
 };

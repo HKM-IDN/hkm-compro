@@ -493,8 +493,8 @@ export const route = {
         jsonLd(localBusinessSchema),
         jsonLd(
           schemaBreadcrumb([
-            { name: lang === 'id' ? 'Beranda' : 'Home', url: SITE_URL + langPath('/', lang) },
-            { name: 'Service Points', url: SITE_URL + langPath('/service-points', lang) },
+            { name: lang === 'id' ? 'Beranda' : 'Home', url: langPath('/', lang) },
+            { name: 'Service Points', url: langPath('/service-points', lang) },
           ])
         ),
       ],
