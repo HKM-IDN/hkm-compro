@@ -1,8 +1,9 @@
 # Build situs statis lalu deploy ke GitHub Pages.
 #
-# Nilai konfigurasi diambil dari Settings → Secrets and variables → Actions → tab "Variables".
-# Wajib: SANITY_PROJECT_ID (boleh juga di tab "Secrets"). Sisanya opsional (lihat .env.example).
-# Nama variable TANPA awalan NEXT_PUBLIC_.
+# Nilai konfigurasi diambil dari Settings → Secrets and variables → Actions
+# (tab "Variables" atau "Secrets", level repo maupun environment "github-pages").
+# Wajib: SANITY_PROJECT_ID. Sisanya opsional (lihat .env.example).
+# Nama lama berawalan NEXT_PUBLIC_ juga diterima sebagai cadangan.
 name: Deploy ke GitHub Pages
 
 on:
@@ -21,9 +22,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  # Build + deploy dalam satu job, supaya variable di environment "github-pages" ikut terbaca saat build.
+  deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID || secrets.SANITY_PROJECT_ID || vars.NEXT_PUBLIC_SANITY_PROJECT_ID || secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+      SANITY_DATASET: ${{ vars.SANITY_DATASET || vars.NEXT_PUBLIC_SANITY_DATASET || 'production' }}
+      SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION || vars.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01' }}
+      SITE_URL: ${{ vars.SITE_URL || vars.NEXT_PUBLIC_SITE_URL || 'https://hkm.co.id' }}
+      GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID || vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+      GOOGLE_MAPS_API_KEY: ${{ vars.GOOGLE_MAPS_API_KEY || vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+      FORMSPREE_CONTACT_ENDPOINT: ${{ vars.FORMSPREE_CONTACT_ENDPOINT || vars.NEXT_PUBLIC_FORMSPREE_CONTACT_ENDPOINT }}
     steps:
+      # Hanya menampilkan "ada"/"kosong", nilainya tidak pernah dicetak.
+      - name: Cek variable
+        run: |
+          for v in SANITY_PROJECT_ID SANITY_DATASET SITE_URL GA_MEASUREMENT_ID GOOGLE_MAPS_API_KEY FORMSPREE_CONTACT_ENDPOINT; do
+            if [ -n "${!v}" ]; then echo "$v: ada"; else echo "$v: KOSONG"; fi
+          done
+          if [ -z "$SANITY_PROJECT_ID" ]; then
+            echo "::error::SANITY_PROJECT_ID kosong. Isi di Settings → Secrets and variables → Actions → Variables (nama persis SANITY_PROJECT_ID)."
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -33,16 +57,7 @@ jobs:
 
       - run: npm ci
 
-      - name: Build
-        run: npm run build
-        env:
-          SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID || secrets.SANITY_PROJECT_ID }}
-          SANITY_DATASET: ${{ vars.SANITY_DATASET || 'production' }}
-          SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION || '2024-01-01' }}
-          SITE_URL: ${{ vars.SITE_URL || 'https://hkm.co.id' }}
-          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
-          GOOGLE_MAPS_API_KEY: ${{ vars.GOOGLE_MAPS_API_KEY }}
-          FORMSPREE_CONTACT_ENDPOINT: ${{ vars.FORMSPREE_CONTACT_ENDPOINT }}
+      - run: npm run build
 
       - uses: actions/configure-pages@v5
 
@@ -50,12 +65,5 @@ jobs:
         with:
           path: dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
