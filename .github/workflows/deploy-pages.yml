@@ -1,0 +1,60 @@
+# Build situs statis lalu deploy ke GitHub Pages.
+#
+# Nilai konfigurasi diambil dari Settings → Secrets and variables → Actions → tab "Variables".
+# Wajib: SANITY_PROJECT_ID. Sisanya opsional (lihat .env.example).
+name: Deploy ke GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # tombol "Run workflow" manual — berguna setelah konten Sanity diubah
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Satu deploy saja dalam satu waktu; deploy yang sedang jalan tidak dibatalkan.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ vars.SANITY_DATASET || 'production' }}
+          SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION || '2024-01-01' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://hkm.co.id' }}
+          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
+          GOOGLE_MAPS_API_KEY: ${{ vars.GOOGLE_MAPS_API_KEY }}
+          FORMSPREE_CONTACT_ENDPOINT: ${{ vars.FORMSPREE_CONTACT_ENDPOINT }}
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
