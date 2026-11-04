@@ -19,6 +19,12 @@ import * as category from './category.mjs';
 import * as product from './product.mjs';
 import * as privacyPolicy from './privacy-policy.mjs';
 import * as terms from './terms.mjs';
+import * as servicePoints from './service-points.mjs';
+import * as news from './news.mjs';
+import * as newsArticle from './news-article.mjs';
+import * as careers from './careers.mjs';
+import * as career from './career.mjs';
+import * as contact from './contact.mjs';
 
 export const ROUTES = [
   home.route,
@@ -26,6 +32,12 @@ export const ROUTES = [
   products.route,
   category.route,
   product.route,
+  servicePoints.route,
+  news.route,
+  newsArticle.route,
+  careers.route,
+  career.route,
+  contact.route,
   privacyPolicy.route,
   terms.route,
 ];
