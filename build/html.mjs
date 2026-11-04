@@ -81,5 +81,5 @@ export function attrs(map) {
 
 /** Embed JSON dengan aman di dalam <script>. */
 export function jsonScript(data) {
-  return raw(JSON.stringify(data).replace(/</g, '\u003c').replace(/>/g, '\u003e'));
+  return raw(JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e'));
 }

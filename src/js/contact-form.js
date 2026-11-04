@@ -69,7 +69,7 @@
     item.appendChild(text);
     toastBox.appendChild(item);
 
-    requestAnimationFrame(function () {
+    window.requestAnimationFrame(function () {
       item.style.opacity = '1';
       item.style.transform = 'translateY(0)';
     });

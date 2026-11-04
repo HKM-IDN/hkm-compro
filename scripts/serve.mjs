@@ -58,8 +58,9 @@ const server = http.createServer(async (req, res) => {
   let file = await resolveFile(req.url || '/');
 
   if (!file) {
-    // Tiru perilaku Nginx: jatuh ke 404.html kalau ada
-    const notFound = path.join(DIST, '404.html');
+    // Tiru perilaku Nginx: jatuh ke 404.html kalau ada (/id/... → id/404.html)
+    const isId = /^\/id(\/|$)/.test(req.url || '');
+    const notFound = path.join(DIST, isId ? 'id/404.html' : '404.html');
     try {
       await fs.stat(notFound);
       const body = await fs.readFile(notFound);

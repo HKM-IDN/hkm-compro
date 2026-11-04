@@ -233,6 +233,6 @@ export function jsonLd(schema) {
   // Schema adalah data yang dibangun di build time, bukan input user.
   // JSON.stringify sudah escape, tapi `<` tetap di-escape manual supaya
   // tidak bisa menutup tag <script> lebih awal.
-  const json = JSON.stringify(schema).replace(/</g, '\u003c');
+  const json = JSON.stringify(schema).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
   return `<script type="application/ld+json">${json}</script>`;
 }
