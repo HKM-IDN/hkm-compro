@@ -13,7 +13,7 @@
  */
 import { page } from '../layout.mjs';
 import { html, raw, cls } from '../html.mjs';
-import { buildMeta, jsonLd, schemaBreadcrumb, SITE_URL } from '../lib/seo.mjs';
+import { buildMeta, jsonLd, schemaBreadcrumb } from '../lib/seo.mjs';
 import { loc } from '../lib/i18n.mjs';
 import { sanitizeHtml } from '../lib/sanitize.mjs';
 import { langPath } from '../routes.mjs';
@@ -222,10 +222,10 @@ export const route = {
       schemas: [
         jsonLd(
           schemaBreadcrumb([
-            { name: lang === 'id' ? 'Beranda' : 'Home', url: SITE_URL + langPath('/', lang) },
+            { name: lang === 'id' ? 'Beranda' : 'Home', url: langPath('/', lang) },
             {
               name: lang === 'id' ? 'Produk' : 'Products',
-              url: SITE_URL + langPath('/products', lang),
+              url: langPath('/products', lang),
             },
           ])
         ),
