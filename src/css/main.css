@@ -1,0 +1,776 @@
+/* ═══════════════════════════════════════════════
+   HKM — stylesheet utama (build vanilla)
+   Di-copy dari app/globals.css, hanya blok font
+   yang diubah (next/font dilepas).
+   Build: npx @tailwindcss/cli -i src/css/main.css -o dist/assets/main.css
+   ═══════════════════════════════════════════════ */
+
+@import 'tailwindcss';
+
+/* ─────────────────────────────────────────────
+   HKM Design System — Color Tokens
+   Otomatis jadi Tailwind utilities:
+   bg-dark, text-dark, bg-dark-2, bg-cyan-bright, dst.
+──────────────────────────────────────────────── */
+@theme {
+  /* Breakpoint — matches mockup 980px main split */
+  --breakpoint-lg: 980px;
+
+  /* Dark backgrounds */
+  --color-dark: #141414;
+  --color-dark-2: #1e1e1e;
+  --color-dark-3: #262626;
+  --color-dark-4: #2e2e2e;
+
+  /* Brand accents */
+  --color-navy: #0044aa;
+  --color-electric-blue: #0066ff;
+  --color-cyan-bright: #00ffff;
+
+  /* HKM gray scale (untuk teks) */
+  --color-hkm-100: #e2e7ef;
+  --color-hkm-300: #b8c5d9;
+  --color-hkm-500: #7c8694;
+
+  /* Razer-style product section tokens */
+  --color-product-bg: #0a0b0e;
+  --color-product-card: #131419;
+  --color-product-card-hover: #181a21;
+
+  /*
+   * Cyan hierarchy:
+   * --color-cyan-info    (#00B8D9) — eyebrows, badges, labels, info accents
+   * --color-electric-blue (#0066ff) — primary CTA buttons
+   * --color-cyan-bright  (#00ffff) — glow effects & decorative only
+   */
+  --color-cyan-info: #00b8d9;
+}
+
+/* ─────────────────────────────────────────────
+   Font Tokens — font dimuat via <link> Google Fonts
+   di <head> (lihat vanilla/build/layout.mjs).
+   next/font sudah tidak dipakai.
+──────────────────────────────────────────────── */
+:root {
+  --font-space-grotesk: 'Space Grotesk';
+  --font-inter: 'Inter';
+  --font-jetbrains-mono: 'JetBrains Mono';
+  --font-source-serif-4: 'Source Serif 4';
+}
+
+@theme {
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+}
+
+/* ─────────────────────────────────────────────
+   Raw CSS variables (rgba — tidak bisa di @theme)
+──────────────────────────────────────────────── */
+:root {
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --glow-cyan: rgba(0, 255, 255, 0.22);
+  --glow-blue: rgba(0, 102, 255, 0.3);
+
+  /* Razer product borders */
+  --border-product: rgba(255, 255, 255, 0.06);
+  --border-product-hover: rgba(0, 184, 217, 0.4);
+  --glow-product: rgba(0, 184, 217, 0.3);
+}
+
+/* ─────────────────────────────────────────────
+   Animations
+──────────────────────────────────────────────── */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+@keyframes sp-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Direct class — tidak perlu Tailwind utility, jalan di semua browser */
+.marquee-track {
+  animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+
+/* ─────────────────────────────────────────────
+   Base styles
+──────────────────────────────────────────────── */
+html,
+body {
+  background-color: #0a0b0e;
+  color: #e2e7ef;
+}
+
+body {
+  font-family: var(--font-inter), Inter, sans-serif;
+}
+
+/* ─────────────────────────────────────────────
+   About page — gradient heading helpers
+   Hero h1 needs gradient on full text + span override
+──────────────────────────────────────────────── */
+/* shared by about hero + products/other page headers */
+.about-hero-title span,
+.page-gradient-title span {
+  background: linear-gradient(135deg, #0066ff, #00ffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* Razer product accent — deeper blue→cyan */
+.product-gradient-title span {
+  background: linear-gradient(135deg, #0066ff, #00b8d9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.about-story-body strong {
+  color: #00ffff;
+  font-weight: 600;
+}
+
+/* ─────────────────────────────────────────────
+   Product page sub-nav sticky top
+   Desktop: 64px (below main nav).
+   Mobile: controlled by --product-nav-h CSS var set by ProductMobileNav.
+──────────────────────────────────────────────── */
+.product-subnav {
+  top: 80px;
+}
+@media (max-width: 979px) {
+  .product-subnav {
+    top: var(--product-nav-h, 56px);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Article prose (news detail body)
+──────────────────────────────────────────────── */
+.article-prose {
+  font-family: var(--font-source-serif-4), Georgia, serif;
+  font-size: 18px;
+  line-height: 1.75;
+  color: #e2e7ef;
+}
+.article-prose p {
+  margin-bottom: 24px;
+}
+.article-prose h2 {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 48px 0 16px;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+.article-prose h3 {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 36px 0 14px;
+  color: #fff;
+}
+.article-prose blockquote {
+  margin: 32px 0;
+  padding: 24px 0 24px 32px;
+  border-left: 3px solid #00ffff;
+  font-size: 22px;
+  line-height: 1.5;
+  font-style: italic;
+  color: #fff;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-weight: 500;
+}
+.article-prose ul {
+  margin: 16px 0 24px;
+  padding-left: 0;
+  list-style: none;
+}
+.article-prose ul li {
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 20px;
+}
+.article-prose ul li::before {
+  content: '+';
+  color: #00ffff;
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+}
+.article-prose ol {
+  margin: 16px 0 24px;
+  padding-left: 28px;
+}
+.article-prose ol li {
+  margin-bottom: 10px;
+}
+.article-prose strong {
+  color: #fff;
+  font-weight: 600;
+}
+.article-prose em {
+  font-style: italic;
+}
+.article-prose a {
+  color: #00ffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.article-prose a:hover {
+  color: #0066ff;
+}
+/* Drop cap on first paragraph */
+.article-prose-dropcap::first-letter {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 64px;
+  line-height: 0.85;
+  float: left;
+  margin: 6px 12px 0 0;
+  color: #00ffff;
+  font-weight: 700;
+}
+/* Inline stats block inside article */
+.inline-stats-block {
+  display: grid;
+  gap: 16px;
+  margin: 36px 0;
+  padding: 28px;
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.08), rgba(0, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  font-family: var(--font-inter), sans-serif;
+}
+.inline-stats-block .is-num {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #00ffff;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.inline-stats-block .is-label {
+  font-size: 11px;
+  color: #b8c5d9;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-jetbrains-mono), monospace;
+}
+@media (max-width: 979px) {
+  .article-prose {
+    font-size: 16px;
+  }
+  .article-prose-dropcap::first-letter {
+    font-size: 48px;
+  }
+  .inline-stats-block {
+    padding: 20px;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Global polish
+──────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+/* Offset for sticky nav on anchor jumps */
+[id] {
+  scroll-margin-top: 80px;
+}
+
+::selection {
+  background: rgba(0, 255, 255, 0.18);
+  color: #00ffff;
+}
+
+/* Cyan focus ring for keyboard users */
+:focus-visible {
+  outline: 2px solid rgba(0, 255, 255, 0.7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Disabled state */
+button:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ─────────────────────────────────────────────
+   Reduced motion — collapse all transitions
+   (keep instant transitions for usability)
+──────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Page fade-in (triggered via PageFade component
+   re-keyed on pathname)
+──────────────────────────────────────────────── */
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-page-in {
+  /* fill-mode 'backwards' (not 'both') so the transform is removed after the
+     animation ends. 'both'/'forwards' would keep transform:translateY(0) on the
+     element, creating a stacking context that breaks position:fixed descendants. */
+  animation: page-in 0.28s ease-out backwards;
+}
+
+/* ─────────────────────────────────────────────
+   Skeleton shimmer
+──────────────────────────────────────────────── */
+@keyframes skeleton-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(90deg, #1c1e24 25%, #242730 50%, #1c1e24 75%);
+  background-size: 200% 100%;
+  animation: skeleton-sweep 1.6s ease-in-out infinite;
+  border-radius: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: #1c1e24;
+  }
+}
+
+/* About stats — responsive border dividers */
+.about-stat-item {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+.about-stat-item:last-child {
+  border-right: none;
+}
+@media (max-width: 979px) {
+  .about-stat-item {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 0;
+  }
+  .about-stat-item:nth-child(odd) {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .about-stat-item:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Footer social icons
+   Di versi React, hover diatur onMouseEnter/onMouseLeave (JS inline).
+   Di vanilla kita pakai CSS murni — tidak perlu JS sama sekali.
+──────────────────────────────────────────────── */
+.social-icon {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #7c8694;
+}
+.social-icon-ig {
+  border-color: rgba(0, 255, 255, 0.3);
+  background: rgba(0, 255, 255, 0.07);
+  color: #00ffff;
+}
+.social-icon:hover {
+  border-color: #00ffff;
+  color: #00ffff;
+  background: rgba(0, 255, 255, 0.1);
+}
+
+/* ─────────────────────────────────────────────
+   Hover kartu — pengganti onMouseEnter/onMouseLeave
+   yang dulu mengatur boxShadow lewat JS inline.
+──────────────────────────────────────────────── */
+.card-hover-blue {
+  transition: box-shadow 0.3s ease;
+}
+.card-hover-blue:hover {
+  box-shadow: 0 16px 40px rgba(0, 102, 255, 0.12);
+}
+.card-hover-cyan {
+  transition: box-shadow 0.3s ease;
+}
+.card-hover-cyan:hover {
+  box-shadow: 0 16px 40px rgba(0, 184, 217, 0.18);
+}
+
+/* ─────────────────────────────────────────────
+   Kartu produk
+   Versi React mengatur border/boxShadow/transform lewat
+   onMouseEnter/onMouseLeave. Di sini murni CSS.
+──────────────────────────────────────────────── */
+.product-card {
+  transition:
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.product-card:hover {
+  border-color: rgba(0, 184, 217, 0.4) !important;
+  box-shadow:
+    0 0 32px rgba(0, 184, 217, 0.1),
+    0 16px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+}
+
+/* Stretched link: anchor menutupi seluruh kartu.
+   Elemen lain yang perlu bisa diklik (ikon marketplace)
+   cukup diberi position:relative + z-index di atasnya. */
+.product-card-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────────
+   Chip filter kategori (/products)
+   Versi React menaruh gradient & border di style inline
+   berdasarkan state. Di sini jadi class .is-active.
+──────────────────────────────────────────────── */
+.filter-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.filter-chip.is-active {
+  background: linear-gradient(135deg, #0066ff, #00b8d9);
+  border: none;
+  color: #0a0b0e;
+}
+
+/* ─────────────────────────────────────────────
+   Homepage — Hero
+──────────────────────────────────────────────── */
+.hero-led {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: #00ffff;
+  box-shadow: 0 0 8px #00ffff;
+}
+/* LED pertama menyala tetap; dua berikutnya berkedip bergantian.
+   Di versi React delay diatur inline per elemen. */
+.hero-led:nth-child(2) {
+  animation: blink 2s infinite 0.3s;
+}
+.hero-led:nth-child(3) {
+  animation: blink 2s infinite 0.6s;
+}
+
+.btn-primary-glow:hover {
+  box-shadow:
+    0 12px 40px rgba(0, 255, 255, 0.22),
+    0 0 0 1px #00ffff;
+}
+
+/* ─────────────────────────────────────────────
+   Homepage — kartu kategori
+   Ikon ikut menyala saat KARTU di-hover (bukan hanya
+   saat kursor tepat di atas ikon, seperti versi React).
+──────────────────────────────────────────────── */
+.cat-card {
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+.cat-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 102, 255, 0.15);
+}
+.cat-card-icon {
+  background: linear-gradient(135deg, rgba(45, 212, 255, 0.15), rgba(0, 180, 230, 0.05));
+}
+.cat-card:hover .cat-card-icon {
+  background: linear-gradient(135deg, #00ffff, #0066ff);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.22);
+}
+
+/* ─────────────────────────────────────────────
+   Homepage — Spotlight (bento grid)
+   Versi React me-render dua set kartu (desktop + mobile).
+   Di sini satu set saja; susunannya yang berubah.
+──────────────────────────────────────────────── */
+.spot-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.spot-grid > .spot-featured {
+  grid-column: 1 / -1;
+}
+@media (min-width: 980px) {
+  .spot-grid {
+    grid-template-columns: 1.6fr 1fr 1fr;
+  }
+  .spot-grid > .spot-featured {
+    grid-column: auto;
+    grid-row: span var(--row-span, 1);
+  }
+}
+/* Di mobile kartu kecil berdampingan 2 kolom */
+@media (max-width: 979px) {
+  .spot-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.spot-card-lg,
+.spot-card-sm {
+  transition:
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.spot-card-lg:hover,
+.spot-card-sm:hover {
+  border-color: rgba(0, 184, 217, 0.4) !important;
+  transform: translateY(-4px);
+}
+.spot-card-lg:hover {
+  box-shadow:
+    0 0 40px rgba(0, 184, 217, 0.12),
+    0 24px 48px rgba(0, 0, 0, 0.4);
+}
+.spot-card-sm:hover {
+  box-shadow:
+    0 0 32px rgba(0, 184, 217, 0.1),
+    0 16px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* line-clamp dipakai di kartu spotlight & berita */
+.line-clamp-1,
+.line-clamp-2,
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-1 {
+  -webkit-line-clamp: 1;
+}
+.line-clamp-2 {
+  -webkit-line-clamp: 2;
+}
+.line-clamp-3 {
+  -webkit-line-clamp: 3;
+}
+
+/* ─────────────────────────────────────────────
+   Homepage — YouTube
+──────────────────────────────────────────────── */
+.yt-featured {
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+.yt-featured:hover {
+  box-shadow: 0 16px 50px rgba(0, 102, 255, 0.2);
+}
+.yt-item {
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+.yt-item:hover {
+  transform: translateX(4px);
+}
+
+/* ─────────────────────────────────────────────
+   Homepage — kartu berita
+──────────────────────────────────────────────── */
+.news-card {
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+.news-card:hover {
+  box-shadow: 0 16px 40px rgba(0, 102, 255, 0.18);
+}
+
+/* Marquee partner: berhenti saat hover ATAU saat ada elemen yang di-fokus
+   keyboard. Versi React hanya menangani hover mouse. */
+.marquee-track:hover,
+.marquee-track:focus-within {
+  animation-play-state: paused;
+}
+
+/* ─────────────────────────────────────────────
+   Hero: cegah scroll horizontal di mobile.
+
+   Glow di balik ilustrasi perangkat memakai inset:-40px, jadi melar
+   40px ke kiri & kanan. Di layar 390px itu membuat dokumen jadi 410px
+   dan muncul scroll horizontal. (Bug ini juga ada di versi Next.)
+
+   Dipakai `overflow-x: clip`, BUKAN `overflow: hidden`:
+   - hidden membuat elemen jadi scroll container dan — sesuai catatan
+     CLAUDE.md — pernah memotong teks bergradien
+     (-webkit-text-fill-color: transparent) di hero.
+   - clip hanya memotong, tanpa efek samping itu, dan hanya di sumbu X.
+──────────────────────────────────────────────── */
+#hero {
+  overflow-x: clip;
+}
+
+/* ─────────────────────────────────────────────
+   MediaSlot — cross-fade poster ↔ video
+   Versi React mengatur opacity lewat state `videoReady`.
+   Di sini video & poster sama-sama ada di DOM; JS cuma
+   menambah class .is-loaded / .is-hidden.
+──────────────────────────────────────────────── */
+.media-video {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.media-video.is-loaded {
+  opacity: 1;
+}
+.media-poster {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+.media-poster.is-hidden {
+  opacity: 0;
+}
+
+/* Kalau pengguna minta animasi dikurangi: video disembunyikan sepenuhnya,
+   poster yang tampil. Versi React mengganti render; di sini cukup CSS. */
+@media (prefers-reduced-motion: reduce) {
+  .media-video {
+    display: none;
+  }
+  .media-poster,
+  .media-poster.is-hidden {
+    opacity: 1;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Tab halaman produk (overview / spesifikasi / dukungan)
+──────────────────────────────────────────────── */
+.product-tab.is-active {
+  color: #00ffff;
+  border-bottom-color: #00ffff;
+}
+/* Di mobile garis aktif digambar pakai ::after, meniru <span> absolut
+   di versi React. */
+.product-tab-mobile.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #00ffff;
+}
+
+/* Panel tab. Tanpa JS, SEMUA panel tampil — isi halaman tetap lengkap
+   dan terbaca mesin pencari. JS menambahkan [hidden] pada yang tidak aktif. */
+.product-panel[hidden] {
+  display: none;
+}
+
+/* ─────────────────────────────────────────────
+   Halaman produk — baris spesifikasi
+   Versi React: grid 280px/1fr gap 60px tanpa breakpoint, jadi di layar
+   390px kolom nilai terhimpit. Di sini satu kolom dulu, dua kolom di
+   desktop (tampilan desktop tidak berubah).
+──────────────────────────────────────────────── */
+.spec-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 980px) {
+  .spec-row {
+    grid-template-columns: 280px 1fr;
+    gap: 60px;
+  }
+}
+
+/* Key highlights: 2 kolom di mobile, sejumlah highlight di desktop. */
+@media (min-width: 980px) {
+  [data-highlights] {
+    grid-template-columns: repeat(var(--hl-cols, 4), 1fr);
+  }
+}
+/* Di mobile, sel ganjil terakhir tidak perlu garis kanan */
+@media (max-width: 979px) {
+  .highlight-cell:nth-child(2n) {
+    border-right: none !important;
+  }
+}
+
+/* CTA "Tempat Beli" — hover ganti warna, dulu lewat onMouseEnter */
+.btn-buy-cta:hover {
+  background: #00ffff !important;
+  color: #1e1e1e;
+  box-shadow: 0 12px 30px rgba(0, 255, 255, 0.22);
+}
+
+/* ─────────────────────────────────────────────
+   FAQ produk — accordion <details> bawaan HTML
+   (versi React pakai useState; ini jalan tanpa JS)
+──────────────────────────────────────────────── */
+.faq-item > summary {
+  list-style: none;
+}
+.faq-item > summary::-webkit-details-marker {
+  display: none;
+}
+.faq-item[open] .faq-chevron {
+  transform: rotate(180deg);
+}

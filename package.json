@@ -1,0 +1,32 @@
+{
+  "name": "hkm-compro-vanila",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Situs company profile HKM — HTML statis, tanpa framework. Node hanya dipakai saat build.",
+  "scripts": {
+    "build": "node build/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "check": "node scripts/smoke-check.mjs",
+    "compare": "node scripts/compare.mjs",
+    "format": "prettier --write \"**/*.{mjs,js,css,md,json}\"",
+    "lint": "eslint src/js",
+    "icons": "node scripts/gen-lucide-icons.mjs"
+  },
+  "dependencies": {
+    "@sanity/client": "^7.22.0",
+    "@sanity/image-url": "^2.1.1",
+    "dotenv": "^17.4.2",
+    "isomorphic-dompurify": "^3.12.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@tailwindcss/cli": "^4.3.3",
+    "eslint": "^9",
+    "prettier": "^3.8.3",
+    "tailwindcss": "^4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

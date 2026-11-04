@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 480">
+  <!-- Generator: Adobe Illustrator 29.0.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 186)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: url(#GradientFill_373);
+      }
+
+      .st1 {
+        fill: url(#GradientFill_375);
+      }
+
+      .st2 {
+        fill: url(#GradientFill_372);
+      }
+
+      .st3 {
+        fill: #1c75bc;
+      }
+
+      .st4 {
+        fill: url(#GradientFill_376);
+      }
+
+      .st5 {
+        fill: url(#GradientFill_37);
+      }
+
+      .st6 {
+        fill: url(#GradientFill_377);
+      }
+
+      .st7 {
+        fill: url(#GradientFill_374);
+      }
+
+      .st8 {
+        fill: url(#GradientFill_371);
+      }
+    </style>
+    <radialGradient id="GradientFill_37" data-name="GradientFill 37" cx="967.45" cy="-383.07" fx="967.45" fy="-383.07" r="419.22" gradientTransform="translate(-833.47 445.66) scale(1.4)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00aeef"/>
+      <stop offset=".14" stop-color="#02a7e9"/>
+      <stop offset=".35" stop-color="#0994db"/>
+      <stop offset=".59" stop-color="#1475c4"/>
+      <stop offset=".86" stop-color="#244aa5"/>
+      <stop offset="1" stop-color="#2e3192"/>
+    </radialGradient>
+    <radialGradient id="GradientFill_371" data-name="GradientFill 37" cx="967.46" cy="-383.06" fx="967.46" fy="-383.06" r="419.21" xlink:href="#GradientFill_37"/>
+    <radialGradient id="GradientFill_372" data-name="GradientFill 37" cx="967.46" cy="-383.06" fx="967.46" fy="-383.06" r="419.22" xlink:href="#GradientFill_37"/>
+    <radialGradient id="GradientFill_373" data-name="GradientFill 37" cx="967.47" cy="-383.05" fx="967.47" fy="-383.05" r="419.2" xlink:href="#GradientFill_37"/>
+    <radialGradient id="GradientFill_374" data-name="GradientFill 37" cx="967.45" cy="-383.07" fx="967.45" fy="-383.07" r="419.23" xlink:href="#GradientFill_37"/>
+    <radialGradient id="GradientFill_375" data-name="GradientFill 37" cx="967.53" cy="-383.1" fx="967.53" fy="-383.1" r="419.17" xlink:href="#GradientFill_37"/>
+    <radialGradient id="GradientFill_376" data-name="GradientFill 37" cx="967.29" cy="-383.02" fx="967.29" fy="-383.02" r="419.37" xlink:href="#GradientFill_37"/>
+    <radialGradient id="GradientFill_377" data-name="GradientFill 37" cx="945.64" cy="-407.66" fx="945.64" fy="-407.66" r="419.13" xlink:href="#GradientFill_37"/>
+  </defs>
+  <polygon class="st5" points="255.07 223.9 180.61 223.9 187.7 142.74 126.85 142.74 107.29 366.18 168.19 366.18 176.03 276.57 250.45 276.57 242.6 366.18 303.51 366.18 323.05 142.74 262.16 142.74 255.07 223.9"/>
+  <polygon class="st8" points="808.94 142.74 753.8 272.02 719.28 142.74 638.42 142.74 618.93 365.2 676.57 365.2 687.04 233.48 722.6 365.2 765.14 365.2 824.96 233.64 812.41 365.2 871.86 365.2 891.33 142.74 808.94 142.74"/>
+  <path class="st3" d="M436.11,255.28l-.34-.37c-.42.36-.63.53-.63.53,0,0,.32-.05.97-.16Z"/>
+  <g>
+    <polygon class="st2" points="401.18 365.13 420.63 142.74 396.87 142.74 356.07 142.74 326.89 142.74 353.71 169.54 336.62 365.13 401.18 365.13"/>
+    <g>
+      <path class="st0" d="M606.88,365.13s-28.9-31.32-29.01-31.44c-39.36-42.47-82.48-84.04-144.88-80.17-2.64.22-5.04.25-7.06.5-2.01.32-3.81.58-5.21.77-1.57.22-2.74.41-3.49.49l100.45,109.85h89.18Z"/>
+      <path class="st7" d="M492.89,210.45c7.45-4.83,16.55-9.03,26.75-11.63.27-.05,73.8-12.45,128.36,26.39,0,0-21.51-29.05-72.43-40.94l42.46-41.53h-88.25l-113.4,111.61.53.55c.54-.53,1.54-1.41,2.84-2.62,1.18-1.04,2.69-2.28,4.45-3.77,1.71-1.44,3.86-2.84,6.53-4.7-.2.11-.41.14-.58.21,3.55-2.44,7.94-5,13.01-7.49.2-.15.51-.25.75-.39,1.03-.52,2.13-1,3.23-1.47,1.05-.48,2.08-.97,3.28-1.42.17-.07.44-.17.61-.24,24.45-10.31,45.35-5.97,70.77-6.33,7.23-.13,22.39-12.67,22.39-12.67l-39.77,5.47s-16.4,1.85-26.1,2.81c4.11-4.31,8.22-7.81,14.55-11.84Z"/>
+    </g>
+  </g>
+  <polygon class="st1" points="932.2 177.22 897.75 177.22 900.76 142.74 935.22 142.74 932.2 177.22"/>
+  <polygon class="st4" points="969.7 142.74 935.22 142.74 938.23 108.29 972.71 108.29 969.7 142.74"/>
+  <polygon class="st6" points="938.95 108.29 904.5 108.29 907.51 73.82 941.97 73.82 938.95 108.29"/>
+</svg>
