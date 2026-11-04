@@ -7,8 +7,9 @@
 /screenshots
 
 # environment — berisi kredensial
-.env.local
-.env*.local
+.env
+.env.*
+!.env.example
 
 # log
 npm-debug.log*
