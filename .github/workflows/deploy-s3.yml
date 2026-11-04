@@ -1,0 +1,82 @@
+# Build situs statis lalu sinkronkan hasilnya (dist/) ke bucket S3.
+#
+# Secrets (Settings → Secrets and variables → Actions → Secrets):
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+# Variables (tab "Variables"):
+#   AWS_S3_BUCKET   wajib — nama bucket tujuan, mis. hkm-webapp
+#   S3_DEST_DIR     opsional — prefix di dalam bucket, mis. prod/compro (kosong = root bucket)
+#   AWS_REGION      opsional — default ap-southeast-1
+#   SANITY_PROJECT_ID wajib; sisanya opsional (lihat .env.example), sama seperti deploy-pages.yml.
+name: Deploy ke S3
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # tombol "Run workflow" manual — berguna setelah konten Sanity diubah
+
+permissions:
+  contents: read
+
+# Satu deploy saja dalam satu waktu; deploy yang sedang jalan tidak dibatalkan.
+concurrency:
+  group: deploy-s3
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build & deploy ke S3
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION || 'ap-southeast-1' }}
+      AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+      S3_DEST_DIR: ${{ vars.S3_DEST_DIR }}
+      SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID || secrets.SANITY_PROJECT_ID || vars.NEXT_PUBLIC_SANITY_PROJECT_ID || secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+      SANITY_DATASET: ${{ vars.SANITY_DATASET || vars.NEXT_PUBLIC_SANITY_DATASET || 'production' }}
+      SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION || vars.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01' }}
+      SITE_URL: ${{ vars.SITE_URL || vars.NEXT_PUBLIC_SITE_URL || 'https://hkm.co.id' }}
+      GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID || vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+      GOOGLE_MAPS_API_KEY: ${{ vars.GOOGLE_MAPS_API_KEY || vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+      FORMSPREE_CONTACT_ENDPOINT: ${{ vars.FORMSPREE_CONTACT_ENDPOINT || vars.NEXT_PUBLIC_FORMSPREE_CONTACT_ENDPOINT }}
+    steps:
+      # Hanya menampilkan "ada"/"kosong", nilainya tidak pernah dicetak.
+      - name: Cek variable
+        run: |
+          for v in AWS_S3_BUCKET SANITY_PROJECT_ID SANITY_DATASET SITE_URL GA_MEASUREMENT_ID GOOGLE_MAPS_API_KEY FORMSPREE_CONTACT_ENDPOINT; do
+            if [ -n "${!v}" ]; then echo "$v: ada"; else echo "$v: KOSONG"; fi
+          done
+          if [ -z "$AWS_S3_BUCKET" ]; then
+            echo "::error::AWS_S3_BUCKET kosong. Isi di Settings → Secrets and variables → Actions → Variables."
+            exit 1
+          fi
+          if [ -z "$SANITY_PROJECT_ID" ]; then
+            echo "::error::SANITY_PROJECT_ID kosong. Isi di Settings → Secrets and variables → Actions → Variables."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Di S3 situs disajikan dari root domain, jadi BASE_PATH sengaja kosong.
+      - run: npm run build
+        env:
+          BASE_PATH: ""
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # --delete menghapus objek di tujuan yang sudah tidak ada di dist/.
+      - name: Sync ke S3
+        run: |
+          DEST="s3://${AWS_S3_BUCKET}"
+          if [ -n "$S3_DEST_DIR" ]; then DEST="${DEST}/${S3_DEST_DIR#/}"; fi
+          echo "Deploy dist/ → ${DEST}"
+          aws s3 sync dist/ "$DEST" --acl public-read --delete --exclude '.git/*'
